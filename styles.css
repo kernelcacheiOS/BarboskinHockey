@@ -2177,3 +2177,115 @@ body {
         padding: 10px 20px;
     }
 }
+/* Кнопки выбора персонажа */
+.character-select-btn {
+    background: linear-gradient(135deg, #4CAF50, #45a049);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: 'Nunito', Arial, sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    box-shadow: 0 4px 10px rgba(76, 175, 80, 0.3);
+    margin-top: 5px;
+    /* Touch оптимизация */
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    touch-action: manipulation;
+    min-height: 44px; /* Минимальный размер для touch */
+    min-width: 80px;
+}
+
+.character-select-btn:hover {
+    background: linear-gradient(135deg, #45a049, #3d8b40);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(76, 175, 80, 0.4);
+}
+
+.character-select-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 5px rgba(76, 175, 80, 0.3);
+}
+
+/* Скрываем кнопки на десктопе по умолчанию */
+@media (hover: hover) and (pointer: fine) {
+    .character-select-btn {
+        display: none;
+    }
+    
+    /* Показываем кнопки при hover на десктопе */
+    .character-card:hover .character-select-btn {
+        display: block;
+        opacity: 0;
+        animation: fadeInBtn 0.3s ease forwards;
+    }
+}
+
+/* Всегда показываем кнопки на мобильных */
+@media (hover: none) and (pointer: coarse) {
+    .character-select-btn {
+        display: block;
+        opacity: 1;
+    }
+    
+    .character-card {
+        height: 280px; /* Увеличиваем высоту для кнопки */
+    }
+}
+
+@keyframes fadeInBtn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Адаптация для мобильных размеров */
+@media (max-width: 768px) {
+    .character-card {
+        width: 160px;
+        height: 260px;
+        padding: 15px;
+    }
+    
+    .character-image {
+        width: 100px;
+        height: 100px;
+    }
+    
+    .character-select-btn {
+        font-size: 12px;
+        padding: 8px 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .character-card {
+        width: 140px;
+        height: 240px;
+        padding: 12px;
+    }
+    
+    .character-image {
+        width: 80px;
+        height: 80px;
+    }
+    
+    .character-select-btn {
+        font-size: 11px;
+        padding: 6px 12px;
+    }
+}

@@ -1008,6 +1008,14 @@ body {
     transition: all 0.3s ease;
     position: relative;
     overflow: hidden;
+    /* Улучшения для touch устройств */
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    touch-action: manipulation;
 }
 
 .character-card::before {
@@ -1032,8 +1040,29 @@ body {
     left: 100%;
 }
 
-.character-card:active {
+.character-card:active,
+.character-card.touching {
     transform: translateY(-5px) scale(1.02);
+    border-color: #ffed4e;
+    background: rgba(255, 215, 0, 0.3);
+}
+
+/* Touch состояния для мобильных */
+@media (hover: none) and (pointer: coarse) {
+    .character-card:hover {
+        transform: none;
+        border-color: #ffd700;
+        background: rgba(255, 215, 0, 0.1);
+        box-shadow: none;
+    }
+    
+    .character-card:active,
+    .character-card.touching {
+        transform: translateY(-5px) scale(1.02);
+        border-color: #ffed4e;
+        background: rgba(255, 215, 0, 0.3);
+        box-shadow: 0 5px 15px rgba(255, 215, 0, 0.4);
+    }
 }
 
 .character-image {

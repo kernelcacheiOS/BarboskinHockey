@@ -1,0 +1,12 @@
+{
+  "name": "Barboskin Hockey",
+  "short_name": "Barboskin Hockey",
+  "description": "Мобильная хоккейная игра с персонажами Барбоскиных",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#1e3c72",
+  "theme_color": "#2a5298",
+  "orientation": "landscape-primary",
+  "categories": ["games", "sports"],
+  "lang": "ru"
+}

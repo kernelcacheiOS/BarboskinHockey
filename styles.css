@@ -1,0 +1,2150 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Nunito', Arial, sans-serif;
+    background: white;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+}
+
+.game-container {
+    width: 100%;
+    max-width: 1000px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.arena-wrapper {
+    width: 100%;
+    padding: 10px;
+    background: transparent;
+    border-radius: 20px;
+}
+
+.hockey-arena {
+    width: 100%;
+    aspect-ratio: 2/1;
+    position: relative;
+}
+
+.arena-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+    border: 2px solid transparent;
+    transition: border-color 0.3s ease;
+}
+
+.arena-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.interactive-zones {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    pointer-events: auto;
+}
+
+.zone-click {
+    position: absolute;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: transparent;
+    border: 2px solid transparent;
+}
+
+.zone-click:hover {
+    background: transparent;
+    border-color: transparent;
+    transform: scale(1.1);
+}
+
+.zone-click:active {
+    transform: scale(0.95);
+    background: transparent;
+}
+
+/* Позиционирование интерактивных зон */
+.left-top {
+    width: 15%;
+    height: 30%;
+    top: 15%;
+    left: 15%;
+}
+
+.left-bottom {
+    width: 15%;
+    height: 30%;
+    bottom: 15%;
+    left: 15%;
+}
+
+.center {
+    width: 12%;
+    height: 24%;
+    top: 38%;
+    left: 44%;
+    border-radius: 50%;
+}
+
+.right-top {
+    width: 15%;
+    height: 30%;
+    top: 15%;
+    right: 15%;
+}
+
+.right-bottom {
+    width: 15%;
+    height: 30%;
+    bottom: 15%;
+    right: 15%;
+}
+
+/* Адаптивность для мобильных устройств */
+@media (max-width: 768px) {
+    .arena-wrapper {
+        padding: 15px;
+    }
+    
+    .zone-click {
+        border-width: 1px;
+    }
+    
+    .left-top, .left-bottom, .right-top, .right-bottom {
+        width: 18%;
+        height: 35%;
+    }
+    
+    .center {
+        width: 25%;
+        height: 45%;
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        padding: 5px;
+    }
+    
+    .arena-wrapper {
+        padding: 10px;
+    }
+    
+    .zone-click {
+        border-width: 1px;
+    }
+    
+    .left-top, .left-bottom, .right-top, .right-bottom {
+        width: 20%;
+        height: 40%;
+    }
+    
+    .center {
+        width: 30%;
+        height: 50%;
+    }
+}
+
+/* Планшеты в альбомной ориентации */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .game-container {
+        max-width: 850px;
+    }
+    
+    .zone-click {
+        border-width: 3px;
+    }
+}
+
+/* Большие экраны */
+@media (min-width: 1025px) {
+    .game-container {
+        max-width: 1100px;
+    }
+    
+    .zone-click {
+        border-width: 3px;
+    }
+    
+    .zone-click:hover {
+        transform: scale(1.15);
+    }
+}
+
+/* Невидимые границы для будущего использования */
+.arena-image.show-border {
+    border-color: #ccc;
+}
+
+.arena-image.show-border-active {
+    border-color: #007bff;
+    box-shadow: 0 0 10px rgba(0, 123, 255, 0.3);
+}
+
+.arena-image.show-border-error {
+    border-color: #dc3545;
+    box-shadow: 0 0 10px rgba(220, 53, 69, 0.3);
+}
+
+.arena-image.show-border-success {
+    border-color: #28a745;
+    box-shadow: 0 0 10px rgba(40, 167, 69, 0.3);
+}
+/* Специальные стили для центрального круга */
+.center {
+    /* Полностью невидимый, но интерактивный */
+    background: transparent;
+    border-color: transparent;
+}
+
+.center:hover {
+    background: transparent;
+    border-color: transparent;
+}
+
+.center:active {
+    background: transparent;
+    transform: scale(0.9);
+}
+/* Хоккейный мяч */
+.hockey-ball {
+    position: absolute;
+    width: 42px;
+    height: 42px;
+    background: #1a1a1a;
+    border: 2px solid #333;
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 
+        inset -3px -3px 6px rgba(255, 255, 255, 0.1),
+        inset 3px 3px 6px rgba(0, 0, 0, 0.3),
+        0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.hockey-ball:hover {
+    transform: translate(-50%, -50%) scale(1.2);
+    box-shadow: 
+        inset -3px -3px 6px rgba(255, 255, 255, 0.2),
+        inset 3px 3px 6px rgba(0, 0, 0, 0.4),
+        0 4px 8px rgba(0, 0, 0, 0.4);
+}
+
+.hockey-ball:active {
+    transform: translate(-50%, -50%) scale(0.9);
+}
+
+/* Адаптивные размеры мяча */
+@media (max-width: 768px) {
+    .hockey-ball {
+        width: 32px;
+        height: 32px;
+    }
+}
+
+@media (max-width: 480px) {
+    .hockey-ball {
+        width: 28px;
+        height: 28px;
+    }
+}
+
+@media (min-width: 1025px) {
+    .hockey-ball {
+        width: 45px;
+        height: 45px;
+    }
+}
+/* Главное меню */
+.main-menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: opacity 0.8s ease, transform 0.8s ease;
+    background: white;
+}
+
+.menu-background {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: white;
+}
+
+.menu-image {
+    width: 95%;
+    height: 95%;
+    object-fit: contain;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.menu-overlay {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+
+/* Кнопка ИГРАТЬ */
+.play-button {
+    background: linear-gradient(135deg, #ffd700 0%, #ffed4e 50%, #ffd700 100%);
+    border: none;
+    border-radius: 50px;
+    padding: 20px 60px;
+    font-size: 32px;
+    font-weight: 900;
+    font-family: 'Nunito', Arial, sans-serif;
+    color: #2c3e50;
+    cursor: pointer;
+    box-shadow: 
+        0 8px 20px rgba(255, 215, 0, 0.4),
+        inset 0 2px 4px rgba(255, 255, 255, 0.3),
+        inset 0 -2px 4px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+    letter-spacing: 2px;
+    transform: translateY(-50px);
+    position: relative;
+    overflow: hidden;
+    z-index: 1000;
+    pointer-events: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.play-button i {
+    font-size: 28px;
+    margin-right: 5px;
+}
+
+.play-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+    transition: left 0.5s ease;
+}
+
+.play-button:hover {
+    transform: translateY(-50px) scale(1.05);
+    box-shadow: 
+        0 12px 30px rgba(255, 215, 0, 0.6),
+        inset 0 2px 4px rgba(255, 255, 255, 0.4),
+        inset 0 -2px 4px rgba(0, 0, 0, 0.1);
+    background: linear-gradient(135deg, #ffed4e 0%, #ffd700 50%, #ffed4e 100%);
+}
+
+.play-button:hover::before {
+    left: 100%;
+}
+
+.play-button:active {
+    transform: translateY(-50px) scale(0.98);
+    box-shadow: 
+        0 4px 15px rgba(255, 215, 0, 0.4),
+        inset 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Анимации переходов */
+.main-menu.fade-out {
+    opacity: 0;
+    transform: scale(0.9);
+    pointer-events: none;
+}
+
+.game-container.fade-in {
+    display: flex !important;
+    opacity: 0;
+    animation: fadeInGame 0.8s ease forwards;
+}
+
+@keyframes fadeInGame {
+    from {
+        opacity: 0;
+        transform: scale(1.1);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Адаптивность для мобильных */
+@media (max-width: 768px) {
+    .play-button {
+        padding: 15px 45px;
+        font-size: 28px;
+        transform: translateY(-30px);
+    }
+    
+    .play-button i {
+        font-size: 24px;
+    }
+    
+    .play-button:hover {
+        transform: translateY(-30px) scale(1.05);
+    }
+    
+    .play-button:active {
+        transform: translateY(-30px) scale(0.98);
+    }
+}
+
+@media (max-width: 480px) {
+    .play-button {
+        padding: 12px 35px;
+        font-size: 24px;
+        transform: translateY(-20px);
+        gap: 8px;
+    }
+    
+    .play-button i {
+        font-size: 20px;
+        margin-right: 3px;
+    }
+    
+    .play-button:hover {
+        transform: translateY(-20px) scale(1.05);
+    }
+    
+    .play-button:active {
+        transform: translateY(-20px) scale(0.98);
+    }
+}
+/* Логотип в главном меню */
+.logo-container {
+    position: absolute;
+    top: 0px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 100;
+}
+
+.logo-image {
+    max-width: 400px;
+    max-height: 200px;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+}
+
+/* Адаптивность для логотипа */
+@media (max-width: 768px) {
+    .logo-container {
+        top: 0px;
+    }
+    
+    .logo-image {
+        max-width: 320px;
+        max-height: 160px;
+    }
+}
+
+@media (max-width: 480px) {
+    .logo-container {
+        top: -3px;
+    }
+    
+    .logo-image {
+        max-width: 280px;
+        max-height: 140px;
+    }
+}
+/* Контейнер для кнопок */
+.buttons-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+}
+
+/* Кнопка НАСТРОЙКИ */
+.settings-button {
+    background: linear-gradient(135deg, #ffd700 0%, #ffed4e 50%, #ffd700 100%);
+    border: none;
+    border-radius: 50px;
+    padding: 15px 50px;
+    font-size: 24px;
+    font-weight: 800;
+    font-family: 'Nunito', Arial, sans-serif;
+    color: #2c3e50;
+    cursor: pointer;
+    box-shadow: 
+        0 6px 15px rgba(255, 215, 0, 0.4),
+        inset 0 2px 4px rgba(255, 255, 255, 0.3),
+        inset 0 -2px 4px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+    letter-spacing: 1px;
+    position: relative;
+    overflow: hidden;
+    z-index: 1000;
+    pointer-events: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.settings-button i {
+    font-size: 20px;
+    margin-right: 5px;
+}
+
+.settings-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+    transition: left 0.5s ease;
+}
+
+.settings-button:hover {
+    transform: scale(1.05);
+    box-shadow: 
+        0 8px 20px rgba(255, 215, 0, 0.6),
+        inset 0 2px 4px rgba(255, 255, 255, 0.4),
+        inset 0 -2px 4px rgba(0, 0, 0, 0.1);
+    background: linear-gradient(135deg, #ffed4e 0%, #ffd700 50%, #ffed4e 100%);
+}
+
+.settings-button:hover::before {
+    left: 100%;
+}
+
+.settings-button:active {
+    transform: scale(0.98);
+    box-shadow: 
+        0 3px 10px rgba(255, 215, 0, 0.4),
+        inset 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Адаптивность для кнопок */
+@media (max-width: 768px) {
+    .buttons-container {
+        gap: 15px;
+    }
+    
+    .settings-button {
+        padding: 12px 40px;
+        font-size: 20px;
+    }
+    
+    .settings-button i {
+        font-size: 18px;
+    }
+}
+
+@media (max-width: 480px) {
+    .buttons-container {
+        gap: 12px;
+    }
+    
+    .settings-button {
+        padding: 10px 30px;
+        font-size: 18px;
+        gap: 6px;
+    }
+    
+    .settings-button i {
+        font-size: 16px;
+        margin-right: 3px;
+    }
+}
+/* Экран настроек */
+.settings-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    background: white;
+}
+
+.settings-background {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: white;
+}
+
+.settings-overlay {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+
+.settings-content {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.settings-content h2 {
+    font-size: 48px;
+    font-weight: 900;
+    font-family: 'Nunito', Arial, sans-serif;
+    color: #2c3e50;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+    letter-spacing: 3px;
+    margin: 0;
+}
+
+.settings-options {
+    background: rgba(255, 215, 0, 0.1);
+    border: 2px solid #ffd700;
+    border-radius: 20px;
+    padding: 30px;
+    min-width: 400px;
+}
+
+.player-settings {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    align-items: center;
+}
+
+.nickname-section {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+    max-width: 300px;
+}
+
+.nickname-section label {
+    font-size: 18px;
+    font-weight: 800;
+    color: #2c3e50;
+    font-family: 'Nunito', Arial, sans-serif;
+    letter-spacing: 1px;
+    text-align: left;
+}
+
+.nickname-input {
+    padding: 12px 16px;
+    font-size: 16px;
+    border: 2px solid #ffd700;
+    border-radius: 25px;
+    background: white;
+    color: #2c3e50;
+    font-family: 'Nunito', Arial, sans-serif;
+    font-weight: 600;
+    outline: none;
+    transition: all 0.3s ease;
+    text-align: center;
+}
+
+.nickname-input:focus {
+    border-color: #ffed4e;
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+    transform: scale(1.02);
+}
+
+.nickname-input::placeholder {
+    color: #999;
+    font-style: italic;
+}
+
+.elo-section {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    align-items: center;
+    text-align: center;
+}
+
+.elo-label {
+    font-size: 20px;
+    font-weight: 800;
+    color: #2c3e50;
+    font-family: 'Nunito', Arial, sans-serif;
+    letter-spacing: 1px;
+}
+
+.elo-value {
+    color: #ffd700;
+    font-size: 24px;
+    font-weight: 900;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.elo-note {
+    font-size: 12px;
+    color: #666;
+    font-style: italic;
+    font-family: 'Nunito', Arial, sans-serif;
+    font-weight: 400;
+}
+
+/* Кнопка НАЗАД */
+.back-button {
+    background: linear-gradient(135deg, #ffd700 0%, #ffed4e 50%, #ffd700 100%);
+    border: none;
+    border-radius: 50px;
+    padding: 15px 40px;
+    font-size: 24px;
+    font-weight: 800;
+    font-family: 'Nunito', Arial, sans-serif;
+    color: #2c3e50;
+    cursor: pointer;
+    box-shadow: 
+        0 6px 15px rgba(255, 215, 0, 0.4),
+        inset 0 2px 4px rgba(255, 255, 255, 0.3),
+        inset 0 -2px 4px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+    letter-spacing: 1px;
+    position: relative;
+    overflow: hidden;
+    z-index: 1000;
+    pointer-events: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.back-button i {
+    font-size: 20px;
+    margin-right: 5px;
+}
+
+.back-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+    transition: left 0.5s ease;
+}
+
+.back-button:hover {
+    transform: scale(1.05);
+    box-shadow: 
+        0 8px 20px rgba(255, 215, 0, 0.6),
+        inset 0 2px 4px rgba(255, 255, 255, 0.4),
+        inset 0 -2px 4px rgba(0, 0, 0, 0.1);
+    background: linear-gradient(135deg, #ffed4e 0%, #ffd700 50%, #ffed4e 100%);
+}
+
+.back-button:hover::before {
+    left: 100%;
+}
+
+.back-button:active {
+    transform: scale(0.98);
+    box-shadow: 
+        0 3px 10px rgba(255, 215, 0, 0.4),
+        inset 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Анимации переходов для настроек */
+.settings-screen.fade-out {
+    opacity: 0;
+    transform: scale(0.95);
+    pointer-events: none;
+    transition: all 0.3s ease;
+}
+
+.settings-screen.fade-in {
+    display: flex !important;
+    opacity: 0;
+    animation: fadeInSettings 0.4s ease forwards;
+}
+
+@keyframes fadeInSettings {
+    from {
+        opacity: 0;
+        transform: scale(1.05);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Адаптивность для экрана настроек */
+@media (max-width: 768px) {
+    .settings-content h2 {
+        font-size: 36px;
+    }
+    
+    .settings-content {
+        gap: 25px;
+    }
+    
+    .settings-options {
+        min-width: 320px;
+        padding: 25px;
+    }
+    
+    .player-settings {
+        gap: 20px;
+    }
+    
+    .nickname-section {
+        max-width: 250px;
+    }
+    
+    .nickname-section label {
+        font-size: 16px;
+    }
+    
+    .nickname-input {
+        padding: 10px 14px;
+        font-size: 15px;
+    }
+    
+    .elo-label {
+        font-size: 18px;
+    }
+    
+    .elo-value {
+        font-size: 22px;
+    }
+    
+    .back-button {
+        padding: 12px 35px;
+        font-size: 20px;
+    }
+    
+    .back-button i {
+        font-size: 18px;
+    }
+}
+
+@media (max-width: 480px) {
+    .settings-content h2 {
+        font-size: 28px;
+        letter-spacing: 2px;
+    }
+    
+    .settings-content {
+        gap: 20px;
+    }
+    
+    .settings-options {
+        min-width: 280px;
+        padding: 20px;
+    }
+    
+    .player-settings {
+        gap: 18px;
+    }
+    
+    .nickname-section {
+        max-width: 220px;
+    }
+    
+    .nickname-section label {
+        font-size: 15px;
+    }
+    
+    .nickname-input {
+        padding: 8px 12px;
+        font-size: 14px;
+    }
+    
+    .elo-label {
+        font-size: 16px;
+    }
+    
+    .elo-value {
+        font-size: 20px;
+    }
+    
+    .elo-note {
+        font-size: 11px;
+    }
+    
+    .back-button {
+        padding: 10px 30px;
+        font-size: 18px;
+        gap: 6px;
+    }
+    
+    .back-button i {
+        font-size: 16px;
+        margin-right: 3px;
+    }
+}
+/* Экран выбора персонажа */
+.character-select-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    background: white;
+}
+
+.character-select-background {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: white;
+}
+
+.character-select-overlay {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+
+.character-select-content {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 40px;
+}
+
+.character-select-content h2 {
+    font-size: 42px;
+    font-weight: 900;
+    font-family: 'Nunito', Arial, sans-serif;
+    color: #2c3e50;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+    letter-spacing: 2px;
+    margin: 0;
+}
+
+.characters-container {
+    display: flex;
+    gap: 30px;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.character-card {
+    background: rgba(255, 215, 0, 0.1);
+    border: 3px solid #ffd700;
+    border-radius: 25px;
+    padding: 20px;
+    width: 200px;
+    height: 250px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.character-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 215, 0, 0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+.character-card:hover {
+    transform: translateY(-10px) scale(1.05);
+    border-color: #ffed4e;
+    background: rgba(255, 215, 0, 0.2);
+    box-shadow: 0 10px 25px rgba(255, 215, 0, 0.3);
+}
+
+.character-card:hover::before {
+    left: 100%;
+}
+
+.character-card:active {
+    transform: translateY(-5px) scale(1.02);
+}
+
+.character-image {
+    width: 120px;
+    height: 120px;
+    object-fit: contain;
+    border-radius: 15px;
+    transition: all 0.3s ease;
+}
+
+.character-card:hover .character-image {
+    transform: scale(1.1);
+}
+
+.character-name {
+    font-size: 18px;
+    font-weight: 800;
+    font-family: 'Nunito', Arial, sans-serif;
+    color: #2c3e50;
+    letter-spacing: 1px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* Анимации переходов для выбора персонажа */
+.character-select-screen.fade-out {
+    opacity: 0;
+    transform: scale(0.95);
+    pointer-events: none;
+    transition: all 0.3s ease;
+}
+
+.character-select-screen.fade-in {
+    display: flex !important;
+    opacity: 0;
+    animation: fadeInCharacterSelect 0.4s ease forwards;
+}
+
+@keyframes fadeInCharacterSelect {
+    from {
+        opacity: 0;
+        transform: scale(1.05);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Адаптивность для экрана выбора персонажа */
+@media (max-width: 768px) {
+    .character-select-content h2 {
+        font-size: 32px;
+        letter-spacing: 1px;
+    }
+    
+    .character-select-content {
+        gap: 30px;
+    }
+    
+    .characters-container {
+        gap: 20px;
+    }
+    
+    .character-card {
+        width: 160px;
+        height: 200px;
+        padding: 15px;
+    }
+    
+    .character-image {
+        width: 100px;
+        height: 100px;
+    }
+    
+    .character-name {
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .character-select-content h2 {
+        font-size: 24px;
+        line-height: 1.2;
+    }
+    
+    .character-select-content {
+        gap: 25px;
+        padding: 20px;
+    }
+    
+    .characters-container {
+        gap: 15px;
+        flex-direction: column;
+    }
+    
+    .character-card {
+        width: 140px;
+        height: 180px;
+        padding: 12px;
+    }
+    
+    .character-image {
+        width: 80px;
+        height: 80px;
+    }
+    
+    .character-name {
+        font-size: 14px;
+    }
+}
+/* Альтернативные варианты для удаления фона (раскомментируйте нужный) */
+
+/* Вариант 1: Более агрессивное удаление темного фона */
+/*
+.character-image {
+    width: 120px;
+    height: 120px;
+    object-fit: contain;
+    border-radius: 15px;
+    transition: all 0.3s ease;
+    background: white;
+    mix-blend-mode: screen;
+    filter: contrast(1.2) brightness(1.2) saturate(1.1);
+}
+*/
+
+/* Вариант 2: Удаление черного фона через CSS фильтры */
+/*
+.character-image {
+    width: 120px;
+    height: 120px;
+    object-fit: contain;
+    border-radius: 15px;
+    transition: all 0.3s ease;
+    filter: 
+        contrast(1.3) 
+        brightness(1.3) 
+        saturate(1.2)
+        drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+    background: linear-gradient(45deg, #f0f0f0, white);
+}
+*/
+
+/* Вариант 3: Полное удаление темных областей */
+/*
+.character-image {
+    width: 120px;
+    height: 120px;
+    object-fit: contain;
+    border-radius: 15px;
+    transition: all 0.3s ease;
+    background: white;
+    mix-blend-mode: lighten;
+    filter: 
+        invert(0) 
+        contrast(1.4) 
+        brightness(1.4) 
+        saturate(1.3);
+}
+*/
+/* Блок поддержки Telegram канала */
+.telegram-support {
+    margin-top: 20px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+}
+
+.telegram-support p {
+    font-size: 16px;
+    color: #2c3e50;
+    font-family: 'Nunito', Arial, sans-serif;
+    font-weight: 600;
+    margin: 0;
+    line-height: 1.4;
+}
+
+.telegram-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background: #0088cc;
+    color: white;
+    text-decoration: none;
+    border-radius: 25px;
+    font-family: 'Nunito', Arial, sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 136, 204, 0.3);
+}
+
+.telegram-link:hover {
+    background: #006699;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 136, 204, 0.4);
+}
+
+.telegram-link:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(0, 136, 204, 0.3);
+}
+
+.telegram-link i {
+    font-size: 18px;
+}
+
+/* Адаптивность для Telegram блока */
+@media (max-width: 768px) {
+    .telegram-support {
+        margin-top: 15px;
+        gap: 8px;
+    }
+    
+    .telegram-support p {
+        font-size: 14px;
+        padding: 0 10px;
+    }
+    
+    .telegram-link {
+        padding: 8px 16px;
+        font-size: 14px;
+    }
+    
+    .telegram-link i {
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .telegram-support {
+        margin-top: 12px;
+        gap: 6px;
+    }
+    
+    .telegram-support p {
+        font-size: 13px;
+        line-height: 1.3;
+    }
+    
+    .telegram-link {
+        padding: 6px 14px;
+        font-size: 13px;
+    }
+    
+    .telegram-link i {
+        font-size: 15px;
+    }
+}
+/* Выбранный персонаж на арене */
+.selected-character {
+    position: absolute;
+    top: 50%;
+    left: 15%; /* Очень далеко в левой стороне */
+    transform: translate(-50%, -50%);
+    z-index: 5;
+    pointer-events: auto; /* Включаем взаимодействие */
+    cursor: grab;
+    user-select: none;
+}
+
+.selected-character:active {
+    cursor: grabbing;
+}
+
+.selected-character.dragging {
+    cursor: grabbing;
+    z-index: 10;
+}
+
+.character-avatar {
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+    border-radius: 50%;
+    border: 2px solid #ffd700;
+    background: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+}
+
+/* Анимация появления персонажа */
+.selected-character.fade-in {
+    animation: characterFadeIn 0.8s ease forwards;
+}
+
+@keyframes characterFadeIn {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.5);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+}
+
+/* Адаптивные размеры для персонажа на арене */
+@media (max-width: 768px) {
+    .selected-character {
+        left: 12%; /* Очень далеко в левой стороне на планшетах */
+    }
+    
+    .character-avatar {
+        width: 50px;
+        height: 50px;
+    }
+}
+
+@media (max-width: 480px) {
+    .selected-character {
+        left: 10%; /* Очень далеко в левой стороне на мобильных */
+    }
+    
+    .character-avatar {
+        width: 40px;
+        height: 40px;
+    }
+}
+
+@media (min-width: 1025px) {
+    .selected-character {
+        left: 18%; /* Очень далеко в левой стороне на больших экранах */
+    }
+    
+    .character-avatar {
+        width: 70px;
+        height: 70px;
+    }
+}
+/* UI элементы игры */
+.game-ui {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 15;
+}
+
+.player-nickname {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    font-family: 'Nunito', Arial, sans-serif;
+    font-weight: 800;
+    font-size: 18px;
+    color: #2c3e50;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 8px 15px;
+    border-radius: 20px;
+    border: 2px solid #ffd700;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.bot-label {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    font-family: 'Nunito', Arial, sans-serif;
+    font-weight: 800;
+    font-size: 18px;
+    color: #2c3e50;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 8px 15px;
+    border-radius: 20px;
+    border: 2px solid #ff6b6b;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Счет игры */
+.score-board {
+    position: absolute;
+    top: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 12px 20px;
+    border-radius: 25px;
+    border: 3px solid #ffd700;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    font-family: 'Nunito', Arial, sans-serif;
+}
+
+.player-score, .bot-score {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+}
+
+.score-label {
+    font-size: 12px;
+    font-weight: 700;
+    color: #666;
+    letter-spacing: 1px;
+}
+
+.score-value {
+    font-size: 28px;
+    font-weight: 900;
+    color: #2c3e50;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+    min-width: 30px;
+    text-align: center;
+}
+
+.score-separator {
+    font-size: 24px;
+    font-weight: 900;
+    color: #ffd700;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+/* Невидимые зоны ворот */
+.goal-zone {
+    position: absolute;
+    width: 8%;
+    height: 40%;
+    top: 30%;
+    background: transparent;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.left-goal {
+    left: 0;
+}
+
+.right-goal {
+    right: 0;
+}
+
+/* Бот персонаж */
+.bot-character {
+    position: absolute;
+    top: 50%;
+    right: 15%; /* Очень далеко в правой стороне */
+    transform: translate(50%, -50%);
+    z-index: 12; /* Поверх хоккейного мяча */
+    pointer-events: none;
+}
+
+/* Обновляем z-index для персонажа игрока */
+.selected-character {
+    position: absolute;
+    top: 50%;
+    left: 15%; /* Очень далеко в левой стороне */
+    transform: translate(-50%, -50%);
+    z-index: 12; /* Поверх хоккейного мяча */
+    pointer-events: auto;
+    cursor: grab;
+    user-select: none;
+}
+
+/* Обновляем z-index для хоккейного мяча */
+.hockey-ball {
+    position: absolute;
+    width: 55px;
+    height: 55px;
+    background: #1a1a1a;
+    border: 3px solid #333;
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 8; /* Под персонажами */
+    cursor: pointer;
+    transition: none; /* Убираем transition для плавного движения */
+    box-shadow: 
+        inset -4px -4px 8px rgba(255, 255, 255, 0.1),
+        inset 4px 4px 8px rgba(0, 0, 0, 0.3),
+        0 3px 6px rgba(0, 0, 0, 0.3);
+}
+
+.hockey-ball:hover {
+    box-shadow: 
+        inset -4px -4px 8px rgba(255, 255, 255, 0.2),
+        inset 4px 4px 8px rgba(0, 0, 0, 0.4),
+        0 5px 10px rgba(0, 0, 0, 0.4),
+        0 0 15px rgba(255, 215, 0, 0.4);
+}
+
+.hockey-ball:active {
+    transform: translate(-50%, -50%) scale(0.95);
+}
+
+/* Эффект движения мяча */
+.hockey-ball.moving {
+    box-shadow: 
+        inset -4px -4px 8px rgba(255, 255, 255, 0.15),
+        inset 4px 4px 8px rgba(0, 0, 0, 0.35),
+        0 4px 12px rgba(0, 0, 0, 0.4),
+        0 0 20px rgba(0, 123, 255, 0.3);
+}
+
+/* Эффект касания мяча */
+.hockey-ball.touching {
+    box-shadow: 
+        inset -4px -4px 8px rgba(255, 255, 255, 0.2),
+        inset 4px 4px 8px rgba(0, 0, 0, 0.4),
+        0 4px 12px rgba(0, 0, 0, 0.5),
+        0 0 25px rgba(255, 215, 0, 0.6),
+        0 0 35px rgba(255, 215, 0, 0.3);
+    animation: touchPulse 0.8s ease-in-out infinite alternate;
+}
+
+@keyframes touchPulse {
+    0% {
+        transform: translate(-50%, -50%) scale(1);
+    }
+    100% {
+        transform: translate(-50%, -50%) scale(1.05);
+    }
+}
+
+/* Адаптивность для UI */
+@media (max-width: 768px) {
+    .player-nickname, .bot-label {
+        font-size: 16px;
+        padding: 6px 12px;
+        top: 10px;
+    }
+    
+    .player-nickname {
+        left: 10px;
+    }
+    
+    .bot-label {
+        right: 10px;
+    }
+    
+    .score-board {
+        top: 10px;
+        padding: 8px 15px;
+        gap: 10px;
+    }
+    
+    .score-value {
+        font-size: 24px;
+    }
+    
+    .score-label {
+        font-size: 10px;
+    }
+    
+    .score-separator {
+        font-size: 20px;
+    }
+    
+    .bot-character {
+        right: 12%;
+    }
+    
+    .selected-character {
+        left: 12%;
+    }
+}
+
+@media (max-width: 480px) {
+    .player-nickname, .bot-label {
+        font-size: 14px;
+        padding: 5px 10px;
+        top: 8px;
+    }
+    
+    .player-nickname {
+        left: 8px;
+    }
+    
+    .bot-label {
+        right: 8px;
+    }
+    
+    .score-board {
+        top: 8px;
+        padding: 6px 12px;
+        gap: 8px;
+    }
+    
+    .score-value {
+        font-size: 20px;
+    }
+    
+    .score-label {
+        font-size: 9px;
+    }
+    
+    .score-separator {
+        font-size: 18px;
+    }
+    
+    .bot-character {
+        right: 10%;
+    }
+    
+    .selected-character {
+        left: 10%;
+    }
+}
+
+@media (min-width: 1025px) {
+    .player-nickname, .bot-label {
+        font-size: 20px;
+        padding: 10px 18px;
+        top: 20px;
+    }
+    
+    .player-nickname {
+        left: 20px;
+    }
+    
+    .bot-label {
+        right: 20px;
+    }
+    
+    .score-board {
+        top: 20px;
+        padding: 15px 25px;
+        gap: 20px;
+    }
+    
+    .score-value {
+        font-size: 32px;
+    }
+    
+    .score-label {
+        font-size: 14px;
+    }
+    
+    .score-separator {
+        font-size: 28px;
+    }
+    
+    .bot-character {
+        right: 18%;
+    }
+    
+    .selected-character {
+        left: 18%;
+    }
+}
+/* Экран результатов игры */
+.game-result-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: opacity 0.5s ease, transform 0.5s ease;
+    background: white;
+}
+
+.result-background {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: white;
+}
+
+.result-overlay {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+
+.result-content {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+    padding: 20px;
+}
+
+.result-character {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.result-character-image {
+    width: 150px;
+    height: 150px;
+    object-fit: contain;
+    border-radius: 20px;
+    border: 4px solid #ffd700;
+    background: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    animation: resultCharacterPulse 2s ease-in-out infinite alternate;
+}
+
+@keyframes resultCharacterPulse {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    }
+    100% {
+        transform: scale(1.05);
+        box-shadow: 0 12px 30px rgba(255, 215, 0, 0.5);
+    }
+}
+
+.result-info {
+    position: absolute;
+    top: -30px;
+    left: -50px;
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    padding: 8px 12px;
+    box-shadow: none;
+    min-width: 100px;
+    z-index: 20;
+}
+
+.result-status {
+    font-size: 16px;
+    font-weight: 800;
+    font-family: 'Nunito', Arial, sans-serif;
+    color: #000000;
+    text-shadow: 1px 1px 3px rgba(255, 255, 255, 0.8);
+    letter-spacing: 1px;
+    margin-bottom: 0;
+    text-align: center;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 4px 8px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+}
+
+.result-buttons {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.menu-button {
+    border: none;
+    border-radius: 50px;
+    padding: 15px 30px;
+    font-size: 18px;
+    font-weight: 800;
+    font-family: 'Nunito', Arial, sans-serif;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+    letter-spacing: 1px;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+    background: linear-gradient(135deg, #ffd700 0%, #ffed4e 50%, #ffd700 100%);
+    color: #2c3e50;
+}
+
+.menu-button i {
+    font-size: 16px;
+}
+
+.menu-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+    transition: left 0.5s ease;
+}
+
+.menu-button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    background: linear-gradient(135deg, #ffed4e 0%, #ffd700 50%, #ffed4e 100%);
+}
+
+.menu-button:hover::before {
+    left: 100%;
+}
+
+.menu-button:active {
+    transform: scale(0.98);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Текст с результатом и ELO под кнопкой */
+.result-summary {
+    margin-top: 15px;
+    font-size: 18px;
+    font-weight: 800;
+    font-family: 'Nunito', Arial, sans-serif;
+    color: #2c3e50;
+    text-align: center;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+    letter-spacing: 1px;
+}
+
+.result-summary.victory {
+    color: #27ae60;
+}
+
+.result-summary.defeat {
+    color: #e74c3c;
+}
+
+/* Анимации переходов для экрана результатов */
+.game-result-screen.fade-in {
+    display: flex !important;
+    opacity: 0;
+    animation: fadeInResult 0.6s ease forwards;
+}
+
+.game-result-screen.fade-out {
+    opacity: 0;
+    transform: scale(0.95);
+    pointer-events: none;
+    transition: all 0.4s ease;
+}
+
+@keyframes fadeInResult {
+    from {
+        opacity: 0;
+        transform: scale(1.1);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Адаптивность для экрана результатов */
+@media (max-width: 768px) {
+    .result-content {
+        gap: 25px;
+        padding: 15px;
+    }
+    
+    .result-character-image {
+        width: 120px;
+        height: 120px;
+    }
+    
+    .result-info {
+        top: -25px;
+        left: -40px;
+        padding: 6px 10px;
+        min-width: 80px;
+    }
+    
+    .result-status {
+        font-size: 14px;
+        padding: 3px 6px;
+    }
+    
+    .result-buttons {
+        gap: 15px;
+    }
+    
+    .menu-button {
+        padding: 12px 25px;
+        font-size: 16px;
+    }
+    
+    .menu-button i {
+        font-size: 14px;
+    }
+    
+    .result-summary {
+        margin-top: 12px;
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .result-content {
+        gap: 20px;
+        padding: 10px;
+    }
+    
+    .result-character-image {
+        width: 100px;
+        height: 100px;
+    }
+    
+    .result-info {
+        top: -20px;
+        left: -35px;
+        padding: 4px 8px;
+        min-width: 70px;
+    }
+    
+    .result-status {
+        font-size: 12px;
+        padding: 2px 4px;
+    }
+    
+    .result-buttons {
+        gap: 12px;
+    }
+    
+    .menu-button {
+        padding: 10px 20px;
+        font-size: 14px;
+        width: 200px;
+    }
+    
+    .menu-button i {
+        font-size: 12px;
+    }
+    
+    .result-summary {
+        margin-top: 10px;
+        font-size: 14px;
+    }
+}
+/* Приветственное окно */
+.welcome-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+.welcome-modal.show {
+    opacity: 1;
+}
+
+.welcome-modal.hide {
+    opacity: 0;
+}
+
+.welcome-overlay {
+    background: rgba(0, 0, 0, 0.9);
+    border-radius: 20px;
+    padding: 0;
+    max-width: 90%;
+    width: 400px;
+    max-height: 90vh;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    transform: scale(0.8);
+    transition: transform 0.5s ease;
+}
+
+.welcome-modal.show .welcome-overlay {
+    transform: scale(1);
+}
+
+.welcome-content {
+    padding: 30px 25px;
+    text-align: center;
+    color: white;
+}
+
+.welcome-header {
+    margin-bottom: 25px;
+}
+
+.welcome-logo {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    margin-bottom: 15px;
+    border-radius: 10px;
+}
+
+.welcome-header h1 {
+    font-size: 28px;
+    font-weight: 800;
+    color: #FFD700;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    margin: 0;
+}
+
+.welcome-body {
+    margin-bottom: 25px;
+    line-height: 1.6;
+}
+
+.version-text {
+    font-size: 18px;
+    font-weight: 600;
+    color: #87CEEB;
+    margin-bottom: 15px;
+}
+
+.support-text {
+    font-size: 16px;
+    color: #E0E0E0;
+    margin-bottom: 10px;
+}
+
+.telegram-welcome-link {
+    display: inline-block;
+    background: linear-gradient(135deg, #0088cc, #0066aa);
+    color: white;
+    text-decoration: none;
+    padding: 12px 20px;
+    border-radius: 25px;
+    font-weight: 600;
+    font-size: 16px;
+    margin: 10px 0;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 136, 204, 0.3);
+}
+
+.telegram-welcome-link:hover {
+    background: linear-gradient(135deg, #0099dd, #0077bb);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 136, 204, 0.4);
+}
+
+.telegram-welcome-link i {
+    margin-right: 8px;
+}
+
+.enjoy-text {
+    font-size: 18px;
+    font-weight: 600;
+    color: #90EE90;
+    margin-top: 15px;
+    margin-bottom: 0;
+}
+
+.welcome-close-btn {
+    background: linear-gradient(135deg, #FF6B6B, #FF5252);
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 25px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+    font-family: 'Nunito', Arial, sans-serif;
+}
+
+.welcome-close-btn:hover {
+    background: linear-gradient(135deg, #FF5252, #FF4444);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+}
+
+.welcome-close-btn i {
+    margin-right: 8px;
+}
+
+/* Адаптивность для мобильных */
+@media (max-width: 480px) {
+    .welcome-overlay {
+        width: 95%;
+        max-width: none;
+    }
+    
+    .welcome-content {
+        padding: 25px 20px;
+    }
+    
+    .welcome-header h1 {
+        font-size: 24px;
+    }
+    
+    .welcome-logo {
+        width: 70px;
+        height: 70px;
+    }
+    
+    .version-text {
+        font-size: 16px;
+    }
+    
+    .support-text, .telegram-welcome-link, .enjoy-text {
+        font-size: 15px;
+    }
+    
+    .welcome-close-btn {
+        font-size: 15px;
+        padding: 10px 20px;
+    }
+}

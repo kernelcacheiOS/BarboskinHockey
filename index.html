@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Barboskin Hockey - Мобильная Игра</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#2a5298">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Приветственное окно при первом входе -->
+    <div class="welcome-modal" id="welcomeModal" style="display: none;">
+        <div class="welcome-overlay">
+            <div class="welcome-content">
+                <div class="welcome-header">
+                    <img src="resources/barboskinlogo3.png" alt="Barboskin Logo" class="welcome-logo">
+                    <h1>Barboskin Hockey</h1>
+                </div>
+                <div class="welcome-body">
+                    <p class="version-text">Это первая версия игры!</p>
+                    <p class="support-text">Поддержите автора подпиской на Telegram:</p>
+                    <a href="https://t.me/barboskinhockey" target="_blank" class="telegram-welcome-link">
+                        <i class="fab fa-telegram"></i> @barboskinhockey
+                    </a>
+                    <p class="enjoy-text">Приятной игры! 🏒</p>
+                </div>
+                <button class="welcome-close-btn" id="welcomeCloseBtn">
+                    <i class="fas fa-times"></i> Закрыть
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Главное меню -->
+    <div class="main-menu" id="mainMenu">
+        <div class="menu-background">
+            <!-- Логотип в верхней части -->
+            <div class="logo-container">
+                <img src="resources/barboskinlogo3.png" alt="Barboskin Logo" class="logo-image">
+            </div>
+            <div class="menu-overlay">
+                <div class="buttons-container">
+                    <button class="play-button" id="playButton">
+                        <i class="fas fa-play"></i> ИГРАТЬ
+                    </button>
+                    <button class="settings-button" id="settingsButton">
+                        <i class="fas fa-cog"></i> НАСТРОЙКИ
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Экран выбора персонажа (скрыт по умолчанию) -->
+    <div class="character-select-screen" id="characterSelectScreen" style="display: none;">
+        <div class="character-select-background">
+            <div class="character-select-overlay">
+                <div class="character-select-content">
+                    <h2>За кого вы хотите играть?</h2>
+                    <div class="characters-container">
+                        <div class="character-card" data-character="malish">
+                            <img src="resources/malish2.png" alt="Malish" class="character-image">
+                            <div class="character-name">Малыш</div>
+                        </div>
+                        <div class="character-card" data-character="genka">
+                            <img src="resources/genka2.png" alt="Genka" class="character-image">
+                            <div class="character-name">Генка</div>
+                        </div>
+                        <div class="character-card" data-character="drushok">
+                            <img src="resources/drushok2.png" alt="Drushok" class="character-image">
+                            <div class="character-name">Дружок</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Экран настроек (скрыт по умолчанию) -->
+    <div class="settings-screen" id="settingsScreen" style="display: none;">
+        <div class="settings-background">
+            <!-- Логотип в верхней части -->
+            <div class="logo-container">
+                <img src="resources/barboskinlogo3.png" alt="Barboskin Logo" class="logo-image">
+            </div>
+            <div class="settings-overlay">
+                <div class="settings-content">
+                    <!-- Настройки игрока -->
+                    <div class="settings-options">
+                        <div class="player-settings">
+                            <div class="nickname-section">
+                                <label for="nicknameInput">НИКНЕЙМ:</label>
+                                <input type="text" id="nicknameInput" class="nickname-input" placeholder="Введите ваш никнейм" maxlength="20">
+                            </div>
+                            <div class="elo-section">
+                                <span class="elo-label">ELO: <span class="elo-value" id="currentElo">0</span></span>
+                                <small class="elo-note">(обновляется после каждой игры)</small>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="back-button" id="backButton">
+                        <i class="fas fa-arrow-left"></i> НАЗАД
+                    </button>
+                    
+                    <!-- Ссылка на Telegram канал -->
+                    <div class="telegram-support">
+                        <p>Поддержите автора подпиской на его Telegram канал</p>
+                        <a href="https://t.me/barboskinhockey" target="_blank" class="telegram-link" id="telegramLink">
+                            <i class="fab fa-telegram"></i> t.me/barboskinhockey
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Экран результатов игры (скрыт по умолчанию) -->
+    <div class="game-result-screen" id="gameResultScreen" style="display: none;">
+        <div class="result-background">
+            <!-- Логотип в верхней части -->
+            <div class="logo-container">
+                <img src="resources/barboskinlogo3.png" alt="Barboskin Logo" class="logo-image">
+            </div>
+            <div class="result-overlay">
+                <div class="result-content">
+                    <!-- Персонаж игрока по центру -->
+                    <div class="result-character">
+                        <img src="" alt="Player Character" class="result-character-image" id="resultCharacterImage">
+                    </div>
+                    
+                    <!-- Результат игры -->
+                    <div class="result-info">
+                        <div class="result-status" id="resultStatus">ПОБЕДА</div>
+                    </div>
+                    
+                    <!-- Кнопки управления -->
+                    <div class="result-buttons">
+                        <button class="menu-button" id="backToMenuButton">
+                            <i class="fas fa-home"></i> В ГЛАВНОЕ МЕНЮ
+                        </button>
+                        
+                        <!-- Текст с результатом и ELO -->
+                        <div class="result-summary" id="resultSummary">
+                            ПОБЕДА +10 ELO
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Игровая арена (скрыта по умолчанию) -->
+    <div class="game-container" id="gameContainer" style="display: none;">
+        <div class="arena-wrapper">
+            <div class="hockey-arena">
+                <img src="resources/arena2.png" alt="Хоккейная арена" class="arena-image">
+                <div class="arena-overlay">
+                    <!-- UI элементы -->
+                    <div class="game-ui">
+                        <div class="player-nickname" id="playerNickname">Игрок</div>
+                        <div class="bot-label" id="botLabel">BOT (Малыш)</div>
+                        
+                        <!-- Счет игры -->
+                        <div class="score-board">
+                            <div class="player-score">
+                                <span class="score-label">ВЫ</span>
+                                <span class="score-value" id="playerScore">0</span>
+                            </div>
+                            <div class="score-separator">:</div>
+                            <div class="bot-score">
+                                <span class="score-value" id="botScore">0</span>
+                                <span class="score-label">БОТ</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Невидимые зоны ворот -->
+                    <div class="goal-zone left-goal" id="leftGoal"></div>
+                    <div class="goal-zone right-goal" id="rightGoal"></div>
+                    
+                    <!-- Выбранный персонаж игрока -->
+                    <div class="selected-character" id="selectedCharacter">
+                        <img src="" alt="Selected Character" class="character-avatar">
+                    </div>
+                    
+                    <!-- Бот персонаж -->
+                    <div class="bot-character" id="botCharacter">
+                        <img src="" alt="Bot Character" class="character-avatar">
+                    </div>
+                    
+                    <!-- Хоккейный мяч в центре -->
+                    <div class="hockey-ball"></div>
+                    
+                    <!-- Интерактивные элементы поверх изображения -->
+                    <div class="interactive-zones">
+                        <div class="zone-click left-top" data-zone="left-top"></div>
+                        <div class="zone-click left-bottom" data-zone="left-bottom"></div>
+                        <div class="zone-click center" data-zone="center"></div>
+                        <div class="zone-click right-top" data-zone="right-top"></div>
+                        <div class="zone-click right-bottom" data-zone="right-bottom"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

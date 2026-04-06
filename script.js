@@ -121,63 +121,97 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Обработчики выбора персонажа
     const characterCards = document.querySelectorAll('.character-card');
+    const characterSelectBtns = document.querySelectorAll('.character-select-btn');
+    
+    // Функция выбора персонажа
+    function selectCharacter(character) {
+        console.log('Выбран персонаж:', character);
+        
+        // Сохраняем выбранного персонажа
+        localStorage.setItem('selectedCharacter', character);
+        
+        // Переход к игровой арене
+        characterSelectScreen.classList.add('fade-out');
+        gameContainer.style.display = 'flex';
+        
+        setTimeout(() => {
+            characterSelectScreen.style.display = 'none';
+            characterSelectScreen.classList.remove('fade-in', 'fade-out');
+            
+            // Сбрасываем состояние игры перед инициализацией
+            gameEnded = false;
+            playerScore = 0;
+            botScore = 0;
+            
+            initializeGame();
+        }, 300);
+    }
+    
+    // Обработчики для кнопок выбора (приоритет для мобильных)
+    characterSelectBtns.forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.stopPropagation(); // Предотвращаем всплытие события
+            const character = this.dataset.character;
+            console.log('Кнопка выбора нажата:', character);
+            selectCharacter(character);
+        });
+        
+        // Touch события для кнопок
+        btn.addEventListener('touchend', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            const character = this.dataset.character;
+            console.log('Touch на кнопке выбора:', character);
+            selectCharacter(character);
+        });
+    });
+    
+    // Обработчики для карточек персонажей (для десктопа и резерв для мобильных)
     characterCards.forEach(card => {
-        // Функция выбора персонажа
-        function selectCharacter() {
-            const character = card.dataset.character;
-            console.log('Выбран персонаж:', character);
-            
-            // Сохраняем выбранного персонажа
-            localStorage.setItem('selectedCharacter', character);
-            
-            // Переход к игровой арене
-            characterSelectScreen.classList.add('fade-out');
-            gameContainer.style.display = 'flex';
-            
-            setTimeout(() => {
-                characterSelectScreen.style.display = 'none';
-                characterSelectScreen.classList.remove('fade-in', 'fade-out');
-                
-                // Сбрасываем состояние игры перед инициализацией
-                gameEnded = false;
-                playerScore = 0;
-                botScore = 0;
-                
-                initializeGame();
-            }, 300);
-        }
-        
         // Click событие для десктопа
-        card.addEventListener('click', selectCharacter);
+        card.addEventListener('click', function(e) {
+            // Проверяем, что клик не по кнопке
+            if (!e.target.classList.contains('character-select-btn')) {
+                const character = card.dataset.character;
+                console.log('Клик по карточке персонажа:', character);
+                selectCharacter(character);
+            }
+        });
         
-        // Touch события для мобильных
+        // Touch события для мобильных (резервный вариант)
         let touchStarted = false;
         
         card.addEventListener('touchstart', function(e) {
-            e.preventDefault();
+            // Если touch по кнопке, не обрабатываем
+            if (e.target.classList.contains('character-select-btn')) {
+                return;
+            }
+            
             touchStarted = true;
             this.classList.add('touching');
-            this.style.transform = 'translateY(-5px) scale(1.02)';
             console.log('Touch start на карточке персонажа:', card.dataset.character);
         });
         
         card.addEventListener('touchend', function(e) {
-            e.preventDefault();
+            // Если touch по кнопке, не обрабатываем
+            if (e.target.classList.contains('character-select-btn')) {
+                return;
+            }
+            
             this.classList.remove('touching');
-            this.style.transform = '';
             
             if (touchStarted) {
                 touchStarted = false;
-                console.log('Touch end - выбираем персонажа:', card.dataset.character);
-                selectCharacter(); // Вызываем функцию выбора
+                e.preventDefault();
+                const character = card.dataset.character;
+                console.log('Touch end на карточке - выбираем персонажа:', character);
+                selectCharacter(character);
             }
         });
         
         card.addEventListener('touchcancel', function(e) {
-            e.preventDefault();
             touchStarted = false;
             this.classList.remove('touching');
-            this.style.transform = '';
         });
     });
     

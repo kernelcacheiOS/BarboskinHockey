@@ -122,8 +122,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // Обработчики выбора персонажа
     const characterCards = document.querySelectorAll('.character-card');
     characterCards.forEach(card => {
-        card.addEventListener('click', function() {
-            const character = this.dataset.character;
+        // Функция выбора персонажа
+        function selectCharacter() {
+            const character = card.dataset.character;
             console.log('Выбран персонаж:', character);
             
             // Сохраняем выбранного персонажа
@@ -144,16 +145,38 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 initializeGame();
             }, 300);
-        });
+        }
+        
+        // Click событие для десктопа
+        card.addEventListener('click', selectCharacter);
         
         // Touch события для мобильных
+        let touchStarted = false;
+        
         card.addEventListener('touchstart', function(e) {
             e.preventDefault();
+            touchStarted = true;
+            this.classList.add('touching');
             this.style.transform = 'translateY(-5px) scale(1.02)';
+            console.log('Touch start на карточке персонажа:', card.dataset.character);
         });
         
         card.addEventListener('touchend', function(e) {
             e.preventDefault();
+            this.classList.remove('touching');
+            this.style.transform = '';
+            
+            if (touchStarted) {
+                touchStarted = false;
+                console.log('Touch end - выбираем персонажа:', card.dataset.character);
+                selectCharacter(); // Вызываем функцию выбора
+            }
+        });
+        
+        card.addEventListener('touchcancel', function(e) {
+            e.preventDefault();
+            touchStarted = false;
+            this.classList.remove('touching');
             this.style.transform = '';
         });
     });

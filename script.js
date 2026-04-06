@@ -808,11 +808,21 @@ function initializeGame() {
             if (playerWon) {
                 eloChange = 10;
             } else {
-                eloChange = -12;
+                // Проверяем, чтобы ELO не уходил в минус
+                if (currentElo >= 12) {
+                    eloChange = -12;
+                } else {
+                    eloChange = -currentElo; // Отнимаем только до 0
+                }
             }
             
             // Обновляем текущий ELO
             currentElo += eloChange;
+            
+            // Убеждаемся, что ELO не меньше 0
+            if (currentElo < 0) {
+                currentElo = 0;
+            }
             
             // Сохраняем новое ELO в localStorage
             localStorage.setItem('playerElo', currentElo.toString());
